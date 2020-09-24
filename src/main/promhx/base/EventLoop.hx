@@ -69,10 +69,18 @@ class EventLoop {
             haxe.Timer.delay(f,0);
 #elseif (js && (noEmbedJs || noEmbedSetImmediate) && !nodejs)
             // fallback to setTimeout
-            untyped __js__("(typeof setImmediate === 'function' ? setImmediate : setTimeout)")(f);
+#if (haxe_ver >= "4.0.0")
+           js.Syntax.code("(typeof setImmediate === 'function' ? setImmediate : setTimeout)")(f);
+#else
+           untyped __js__("(typeof setImmediate === 'function' ? setImmediate : setTimeout)")(f);
+#end
 #elseif js
             // use polyfill or native node
+#if (haxe_ver >= "4.0.0")
+            js.Syntax.code("setImmediate")(f);
+#else
             untyped __js__("setImmediate")(f);
+#end
 #else
             f();
 #end
